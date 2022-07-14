@@ -176,7 +176,7 @@ const createGridView = () => {
             if(row==1) {
                 let th = document.createElement('th');
                 th.classList.add("btn-tokenArrow", 'noselect');
-                th.textContent = '🡻';
+                th.textContent = '🠋 🡻 🠟';
                 tr.appendChild(th);
             }else {
                 let td = document.createElement('td');
