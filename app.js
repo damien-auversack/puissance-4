@@ -179,7 +179,7 @@ const createGridView = () => {
     }
     viewGrid.appendChild(table); 
 }
-const Game = (grid, currentColor) => {
+const game = (grid, currentColor) => {
     let btnEvents = document.getElementsByClassName('btn-tokenArrow');
     let subtitle = document.getElementById('subtitle');
     let actualTokenPosition = {x:0,y:0};
@@ -212,7 +212,7 @@ const Game = (grid, currentColor) => {
 }
 
 // Main ---------------------------------
-const Main = () => {
+const main = () => {
     
     let grid = [
         [color.EMPTY, color.EMPTY, color.EMPTY, color.EMPTY, color.EMPTY, color.EMPTY, color.EMPTY],
@@ -228,7 +228,7 @@ const Main = () => {
     subtitle.textContent = 'Tour du joueur '+((currentColor==color.RED)?'rouge : 🔴':'jaune : 🟡');
 
     createGridView();
-    Game(grid, currentColor);
+    game(grid, currentColor);
 };
 
-Main();
+main();
