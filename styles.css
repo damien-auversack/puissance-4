@@ -17,6 +17,10 @@ body {
     text-align: center;
 }
 
+img {
+    margin: auto;
+}
+
 tr {
 
     width: 100%;
@@ -37,18 +41,26 @@ td {
     border-radius: 100%;
 }
 
-.btn-tokenArrow:hover {
-    cursor: pointer;
-    color: white;
-    text-shadow: 0 0 2px black;
+.noselect {
+    -webkit-touch-callout: none; 
+    -webkit-user-select: none; 
+    -khtml-user-select: none; 
+    -moz-user-select: none; 
+    -ms-user-select: none; 
+    user-select: none; 
 }
 
-.noselect {
-    -webkit-touch-callout: none; /* iOS Safari */
-      -webkit-user-select: none; /* Safari */
-       -khtml-user-select: none; /* Konqueror HTML */
-         -moz-user-select: none; /* Old versions of Firefox */
-          -ms-user-select: none; /* Internet Explorer/Edge */
-              user-select: none; /* Non-prefixed version, currently
-                                    supported by Chrome, Edge, Opera and Firefox */
-  }
+.arrowBtn {    
+    margin: auto;
+    width: 25px;
+    height: 25px;
+    background: url(./img/arrow-black.svg);
+    background-size: 25px 25px;
+    background-repeat: no-repeat;
+}
+
+.arrowBtn:hover {
+    cursor: pointer;
+    background: url(./img/arrow-white.svg);
+    background-repeat: no-repeat;
+}
