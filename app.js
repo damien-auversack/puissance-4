@@ -1,7 +1,7 @@
 // Util ---------------------------------
 const log = (text) =>{
     console.log(JSON.parse(JSON.stringify(text)));
-}
+};
 const color = {
     RED:'🔴',
     YELLOW:'🟡',
@@ -31,20 +31,20 @@ const getColorToken = (grid, tokenPosition) => {
     if(elt == '🔴') return color.RED;
     else if(elt == '🟡') return color.YELLOW;
     else if(elt == '') return color.EMPTY;
-}
+};
 const isWin = (grid, tokenPosition) => {
-    if(countVertically(grid, tokenPosition) >= 4) return true;
-    if(countHorizontally(grid, tokenPosition) >= 4) return true;
-    if(countDiagonalBotLeftToTopRight(grid, tokenPosition) >= 4) return true;
-    if(countDiagonalTopLeftToBotRight(grid, tokenPosition) >= 4) return true;
+    if(countVertically(grid, tokenPosition)[0] >= 4) return [true, countVertically(grid, tokenPosition)[1]];
+    if(countHorizontally(grid, tokenPosition)[0] >= 4) return [true, countHorizontally(grid, tokenPosition)[1]];
+    if(countDiagonalBotLeftToTopRight(grid, tokenPosition)[0] >= 4) return [true, countDiagonalBotLeftToTopRight(grid, tokenPosition)[1]];
+    if(countDiagonalTopLeftToBotRight(grid, tokenPosition)[0] >= 4) return [true, countDiagonalTopLeftToBotRight(grid, tokenPosition)[1]];
 
     return false;
 };
 const isWinMoreInfos = (tokenPosition) => {
-    if(countVertically(tokenPosition) >= 4) return 'Win Vertically';
-    if(countHorizontally(tokenPosition) >= 4) return 'Win Horizontally';
-    if(countDiagonalBotLeftToTopRight(tokenPosition) >= 4) return 'Win DiagonalBotLeftToTopRight';
-    if(countDiagonalTopLeftToBotRight(tokenPosition) >= 4) return 'Win DiagonalTopLeftToBotRight';
+    if(countVertically(tokenPosition)[0] >= 4) return 'Win Vertically';
+    if(countHorizontally(tokenPosition)[0] >= 4) return 'Win Horizontally';
+    if(countDiagonalBotLeftToTopRight(tokenPosition)[0] >= 4) return 'Win DiagonalBotLeftToTopRight';
+    if(countDiagonalTopLeftToBotRight(tokenPosition)[0] >= 4) return 'Win DiagonalTopLeftToBotRight';
 
     return 'Pas gagné';
 };
@@ -55,44 +55,51 @@ const isTokenPositionOK = (grid, tokenPosition) => {
     if(grid[tokenPosition.y][tokenPosition.x] == color.EMPTY) return false;
 
     return true;
-}
+};
 const countVertically = (grid, tokenPosition) => {
     if(!isTokenPositionOK(grid, tokenPosition)) return 0;
 
+    let winningPosition = [];
     let nbVertically = 0;
     let actualColor = grid[tokenPosition.y][tokenPosition.x];
     // Sup et egal
     for (let y = tokenPosition.y; y <= grid.length-1; y++) {  
         if(grid[y][tokenPosition.x] != actualColor) break;
         nbVertically++;
+        winningPosition.push({x:tokenPosition.x,y:y});
     }
     // Inf
     for (let y = tokenPosition.y-1; y >= 0; y--) { 
         if(grid[y][tokenPosition.x] != actualColor) break;
         nbVertically++;
+        winningPosition.push({x:tokenPosition.x,y:y});
     }
-    return nbVertically;
+    return [nbVertically,winningPosition];
 };
 const countHorizontally = (grid, tokenPosition) => {
     if(!isTokenPositionOK(grid, tokenPosition)) return 0;
 
+    let winningPosition = [];
     let nbHorizontally = 0;
     let actualColor = grid[tokenPosition.y][tokenPosition.x];
     // Sup et egal
     for (let x = tokenPosition.x; x <= grid[tokenPosition.y].length-1; x++) {  
         if(grid[tokenPosition.y][x] != actualColor) break;
         nbHorizontally++;
+        winningPosition.push({x:x,y:tokenPosition.y});
     }
     // Inf
     for (let x = tokenPosition.x-1; x >= 0; x--) { 
         if(grid[tokenPosition.y][x] != actualColor) break;
         nbHorizontally++;
+        winningPosition.push({x:x,y:tokenPosition.y});
     }
-    return nbHorizontally;
+    return [nbHorizontally,winningPosition];
 };
 const countDiagonalBotLeftToTopRight = (grid, tokenPosition) => {
     if(!isTokenPositionOK(grid, tokenPosition)) return 0;
 
+    let winningPosition = [];
     let nbDiagonalBotLeftToTopRight = 0;
     let actualColor = grid[tokenPosition.y][tokenPosition.x];
     // Sup et egal
@@ -101,6 +108,7 @@ const countDiagonalBotLeftToTopRight = (grid, tokenPosition) => {
         if(!isTokenPositionOK(grid, {x:x,y:y})) break;
         if(grid[y][x] != actualColor) break;
         nbDiagonalBotLeftToTopRight++;
+        winningPosition.push({x:x,y:y});
         y--;
         x++;
     }
@@ -115,14 +123,16 @@ const countDiagonalBotLeftToTopRight = (grid, tokenPosition) => {
             break;
         }
         nbDiagonalBotLeftToTopRight++;
+        winningPosition.push({x:x,y:y});
         y++;
         x--;
     }
-    return nbDiagonalBotLeftToTopRight;
+    return [nbDiagonalBotLeftToTopRight, winningPosition];
 };
 const countDiagonalTopLeftToBotRight = (grid, tokenPosition) => {
     if(!isTokenPositionOK(grid, tokenPosition)) return 0;
 
+    let winningPosition = [];
     let nbDiagonalTopLeftToBotRight = 0;
     let actualColor = grid[tokenPosition.y][tokenPosition.x];
     // Sup et egal
@@ -132,6 +142,7 @@ const countDiagonalTopLeftToBotRight = (grid, tokenPosition) => {
         
         if(grid[y][x] != actualColor) break;
         nbDiagonalTopLeftToBotRight++;
+        winningPosition.push({x:x,y:y});
         y++;
         x++;
     }
@@ -148,13 +159,21 @@ const countDiagonalTopLeftToBotRight = (grid, tokenPosition) => {
             break;
         }
         nbDiagonalTopLeftToBotRight++;
+        winningPosition.push({x:x,y:y});
         y--;
         x--;
     }
-    return nbDiagonalTopLeftToBotRight;
+    return [nbDiagonalTopLeftToBotRight, winningPosition];
 };
 
 // View ---------------------------------
+const colorWinTokens = (positionsArray) => {
+
+    positionsArray.forEach(position => {
+        let tokenPlace = document.getElementById('grid_r-'+(position.y+1)+'_c-'+(position.x+1));;
+        tokenPlace.classList.add("winTokens");
+    });
+};
 const createGridView = () => {
     let viewGrid = document.getElementById('grid');
     let table = document.createElement('table');
@@ -178,14 +197,14 @@ const createGridView = () => {
         table.appendChild(tr)
     }
     viewGrid.appendChild(table); 
-}
+};
 const game = (grid, currentColor) => {
     let btnEvents = document.getElementsByClassName('btn-tokenArrow');
     let subtitle = document.getElementById('subtitle');
     let actualTokenPosition = {x:0,y:0};
     for (let i = 0; i < btnEvents.length; i++) {
         btnEvents[i].addEventListener('click', ()=> {
-            if(isWin(grid, {x:actualTokenPosition.x,y:actualTokenPosition.y})) return;
+            if(isWin(grid, {x:actualTokenPosition.x,y:actualTokenPosition.y})[0]) return;
             
             actualTokenPosition = {x:i,y:findFreeY(grid, i)};
             if(actualTokenPosition.y<0)return;    
@@ -204,12 +223,14 @@ const game = (grid, currentColor) => {
                 let tokenPlaceY = document.getElementById('grid_r-'+(actualTokenPosition.y+1)+'_c-'+(actualTokenPosition.x+1));
                 tokenPlaceY.style.backgroundColor='yellow';
             };
-            if(isWin(grid, {x:actualTokenPosition.x,y:actualTokenPosition.y})) {
+            if(isWin(grid, {x:actualTokenPosition.x,y:actualTokenPosition.y})[0]) {
+                let winningPosition = isWin(grid, {x:actualTokenPosition.x,y:actualTokenPosition.y})[1];
+                colorWinTokens(winningPosition);
                 subtitle.textContent = 'Victoire du joueur '+((actualColorToken==color.RED)?'rouge ! 🔴 ':'jaune ! 🟡');
             }
         });
     }
-}
+};
 
 // Main ---------------------------------
 const main = () => {
@@ -228,6 +249,7 @@ const main = () => {
     subtitle.textContent = 'Tour du joueur '+((currentColor==color.RED)?'rouge : 🔴':'jaune : 🟡');
 
     createGridView();
+    
     game(grid, currentColor);
 };
 
